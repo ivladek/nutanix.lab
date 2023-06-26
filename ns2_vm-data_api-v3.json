@@ -1,0 +1,72 @@
+{
+    "spec": {
+        "name": "ns2",
+        "resources": {
+            "power_state":"ON",
+            "boot_config": {
+                "boot_type": "UEFI"
+            },
+            "num_sockets": 1,
+            "num_vcpus_per_socket": 1,
+            "memory_size_mib": 1024,
+            "memory_overcommit_enabled": false,
+            "disk_list": [
+                {
+                    "device_properties": {
+                        "device_type": "DISK",
+                        "disk_address": {
+                            "device_index": 0,
+                            "adapter_type": "SCSI"
+                        }
+                    },
+                    "data_source_reference": {
+                        "kind": "image",
+                        "uuid": "b3de9de1-36cc-4acc-83ca-6f4db5b64f33"
+                    },
+                    "disk_size_mib": 5120
+                },
+                {
+                    "device_properties": {
+                        "device_type": "CDROM",
+                        "disk_address": {
+                            "device_index": 0,
+                            "adapter_type": "IDE"
+                        }
+                    }
+                }
+            ],
+            "nic_list":[
+                {
+                    "nic_type": "NORMAL_NIC",
+                    "is_connected": true,
+                    "ip_endpoint_list": [
+                        {
+                            "type": "ASSIGNED",
+                            "ip": "10.1.8.12"
+                        }
+                    ],
+                    "subnet_reference": {
+                        "kind": "subnet",
+                        "name": "ntnx-core_ip",
+                        "uuid": "a5eb4f19-4fc5-4201-b1ee-5d0f6862ceab"
+                    }
+                }
+            ],
+            "guest_customization": {
+                "cloud_init": {
+                    "user_data": "I2Nsb3VkLWNvbmZpZwoKZnFkbjogbnMxLm51dGFuaXgubGFiCm1hbmFnZV9ldGNfaG9zdHM6IHRydWUKdGltZXpvbmU6IEFzaWEvQWxtYXR5Cgp1c2VyczoKICAtIG5hbWU6IG51dGFuaXgKICAgIGhhc2hlZF9wYXNzd2Q6ICQ2JHJvdW5kcz00MDk2JFd6LkxIdlhDQnBBa29sNEUkeUxDdXFWWmxaZkhWcGRZQzdaYU0yUGNkSW52QmdYendQUThpV0hUWGUxZTl0OWNuU0pWTzREMkFCNW1NVFhhMXRrTUgvUDF5VVVvTzFwN1A4dUVBTy8KICAgIGdyb3Vwczogc3VkbwogICAgc2hlbGw6IC9iaW4vYmFzaAogICAgc3VkbzogWydBTEw9KEFMTCkgTk9QQVNTV0Q6QUxMJ10KICAgIGxvY2stcGFzc3dkOiBmYWxzZQoKc3NoX3B3YXV0aDogdHJ1ZQpjaHBhc3N3ZDoKICBleHBpcmU6IGZhbHNlCgp3cml0ZV9maWxlczoKICAtIHBhdGg6IC9ldGMvYmluZC9uYW1lZC5jb25mLm9wdGlvbnMKICAgIG93bmVyOiByb290OmJpbmQKICAgIHBlcm1pc3Npb25zOiAwNjQ0CiAgICBlbmNvZGluZzogdGV4dC9wbGFpbgogICAgY29udGVudDogfAogICAgICBvcHRpb25zIHsKICAgICAgICBkaXJlY3RvcnkgICAgICAgICAgICIvdmFyL2NhY2hlL2JpbmQiOwogICAgICAgIGxpc3Rlbi1vbiAgICAgICAgICAgeyBhbnk7IH07CiAgICAgICAgbGlzdGVuLW9uLXY2ICAgICAgICB7IG5vbmU7IH07CiAgICAgICAgZG5zc2VjLXZhbGlkYXRpb24gICBhdXRvOwoKICAgICAgICBhbGxvdy1xdWVyeS1jYWNoZSAgIHsgYW55OyB9OwogICAgICAgIHJlY3Vyc2lvbiAgICAgICAgICAgeWVzOwogICAgICAgIGFsbG93LXF1ZXJ5ICAgICAgICAgeyBhbnk7IH07CiAgICAgICAgYWxsb3ctcmVjdXJzaW9uICAgICB7IGFueTsgfTsKICAgICAgICBhbGxvdy11cGRhdGUgICAgICAgIHsgbm9uZTsgfTsKICAgICAgICBhbGxvdy10cmFuc2ZlciAgICAgIHsgYW55OyB9OwogICAgICAgIG5vdGlmeSAgICAgICAgICAgICAgZXhwbGljaXQ7CgogICAgICAgIG1hc3RlcmZpbGUtZm9ybWF0ICAgdGV4dDsKICAgICAgfTsKCiAgICAgIGxvZ2dpbmcgewogICAgICAgIGNoYW5uZWwgYmluZC5sb2cgewogICAgICAgICAgZmlsZSAgICAgICAgICAgICIvdmFyL2NhY2hlL2JpbmQvYmluZC5sb2ciIHZlcnNpb25zIDEwIHNpemUgMjBtOwogICAgICAgICAgc2V2ZXJpdHkgICAgICAgIG5vdGljZTsKICAgICAgICAgIHByaW50LWNhdGVnb3J5ICB5ZXM7CiAgICAgICAgICBwcmludC1zZXZlcml0eSAgeWVzOwogICAgICAgICAgcHJpbnQtdGltZSAgICAgIHllczsKICAgICAgICB9OwogICAgICAgIGNhdGVnb3J5IHF1ZXJpZXMgIHsgYmluZC5sb2c7IH07CiAgICAgICAgY2F0ZWdvcnkgZGVmYXVsdCAgeyBiaW5kLmxvZzsgfTsKICAgICAgICBjYXRlZ29yeSBjb25maWcgICB7IGJpbmQubG9nOyB9OwogICAgICB9OwogICAgZGVmZXI6IHRydWUKCiAgLSBwYXRoOiAvZXRjL2JpbmQvbmFtZWQuY29uZi5sb2NhbAogICAgb3duZXI6IHJvb3Q6YmluZAogICAgcGVybWlzc2lvbnM6IDA2NDQKICAgIGVuY29kaW5nOiB0ZXh0L3BsYWluCiAgICBjb250ZW50OiB8CiAgICAgIHpvbmUgIm51dGFuaXgtbGFiLmNvbSIgSU4gewogICAgICAgIHR5cGUgIG1hc3RlcjsKICAgICAgICBmaWxlICAibnV0YW5peC5sYWIuY29uZiI7CiAgICAgIH07CiAgICAgIHpvbmUgIjguMS4xMC5pbi1hZGRyLmFycGEiIElOIHsKICAgICAgICB0eXBlICBtYXN0ZXI7CiAgICAgICAgZmlsZSAgIjEwLjEuOC4wLmNvbmYiOwogICAgICB9OwogICAgZGVmZXI6IHRydWUKCiAgLSBwYXRoOiAvdmFyL2NhY2hlL2JpbmQvU09BLmNvbmYKICAgIG93bmVyOiBiaW5kOmJpbmQKICAgIHBlcm1pc3Npb25zOiAwNjQ0CiAgICBlbmNvZGluZzogdGV4dC9wbGFpbgogICAgY29udGVudDogfAogICAgICAkVFRMIDg2NDAwICAgICAgOyAyNGgKCiAgICAgIEAgSU4gU09BICAgICAgbnMxLm51dGFuaXgubGFiLiBhZG1pbi5udXRhbml4LmxhYi4gKAogICAgICAgIDIwMjMwNjI0MTIgIDsgc2VyaWFsCiAgICAgICAgMzYwMCAgICAgICAgOyByZWZyZXNoICAgICAgMWgKICAgICAgICA2MDAgICAgICAgICA7IHJldHJ5ICAgICAgICAxMG0KICAgICAgICA0MzIwMDAgICAgICA7IGV4cGlyZSAgICAgICA1ZAogICAgICAgIDg2NDAwICAgICAgIDsgZGVmYXVsdCBUVEwgIDI0aAogICAgICApCgogICAgICBAIE5TICBuczEubnV0YW5peC5sYWIuCiAgICAgIEAgTlMgIG5zMi5udXRhbml4LmxhYi4KICAgIGRlZmVyOiB0cnVlCgogIC0gcGF0aDogL3Zhci9jYWNoZS9iaW5kL251dGFuaXgubGFiLmNvbmYKICAgIG93bmVyOiBiaW5kOmJpbmQKICAgIHBlcm1pc3Npb25zOiAwNjQ0CiAgICBlbmNvZGluZzogdGV4dC9wbGFpbgogICAgY29udGVudDogfAogICAgICAkSU5DTFVERSBTT0EuY29uZgoKICAgICAgbnMxICAgICAgICAgICAgIEEgICAxMC4xLjguMTEKICAgICAgbnMyICAgICAgICAgICAgIEEgICAxMC4xLjguMTIKCiAgICAgIHRpbWUgICAgICAgICAgICBBICAgMTAuMS44LjIwMQogICAgICBzdy0xMGctcWZ4ICAgICAgQSAgIDEwLjEuOC4yMDEKICAgICAgc3ctMWctZXggICAgICAgIEEgICAxMC4xLjguMjAyCgogICAgICBudG54LWlwbWkxICAgICAgQSAgIDEwLjEuOC40MQogICAgICBudG54LWlwbWkyICAgICAgQSAgIDEwLjEuOC40MgogICAgICBudG54LWlwbWkzICAgICAgQSAgIDEwLjEuOC40MwogICAgICBudG54LWlwbWk0ICAgICAgQSAgIDEwLjEuOC40NAoKICAgICAgbnRueC1haHYxICAgICAgIEEgICAxMC4xLjguNTEKICAgICAgbnRueC1haHYyICAgICAgIEEgICAxMC4xLjguNTIKICAgICAgbnRueC1haHYzICAgICAgIEEgICAxMC4xLjguNTMKICAgICAgbnRueC1haHY0ICAgICAgIEEgICAxMC4xLjguNTQKCiAgICAgIG50bngtY3ZtMSAgICAgICBBICAgMTAuMS44LjYxCiAgICAgIG50bngtY3ZtMiAgICAgICBBICAgMTAuMS44LjYyCiAgICAgIG50bngtY3ZtMyAgICAgICBBICAgMTAuMS44LjYzCiAgICAgIG50bngtY3ZtNCAgICAgICBBICAgMTAuMS44LjY0CgogICAgICBudG54LWNsdXRlcjEgICAgQSAgIDEwLjEuOC42MAogICAgICAgICAgICAgICAgICAgICAgQSAgIDEwLjEuOC42MQogICAgICAgICAgICAgICAgICAgICAgQSAgIDEwLjEuOC42MgogICAgICAgICAgICAgICAgICAgICAgQSAgIDEwLjEuOC42MwogICAgICAgICAgICAgICAgICAgICAgQSAgIDEwLjEuOC42NAoKICAgICAgbnRueC1vYzEgICAgICAgIEEgICAxMC4xLjguNzEKICAgICAgbnRueC1wYzIgICAgICAgIEEgICAxMC4xLjguNzIKICAgICAgbnRueC1wYzMgICAgICAgIEEgICAxMC4xLjguNzMKCiAgICAgIG50bngtcGMgICAgICAgICBBICAgMTAuMS44LjcwCiAgICAgICAgICAgICAgICAgICAgICBBICAgMTAuMS44LjcxCiAgICAgICAgICAgICAgICAgICAgICBBICAgMTAuMS44LjcyCiAgICAgICAgICAgICAgICAgICAgICBBICAgMTAuMS44LjczCiAgICBkZWZlcjogdHJ1ZQoKICAtIHBhdGg6IC92YXIvY2FjaGUvYmluZC8xMC4xLjguMC5jb25mCiAgICBvd25lcjogYmluZDpiaW5kCiAgICBwZXJtaXNzaW9uczogMDY0NAogICAgZW5jb2Rpbmc6IHRleHQvcGxhaW4KICAgIGNvbnRlbnQ6IHwKICAgICAgJElOQ0xVREUgU09BLmNvbmYKCiAgICAgIDExICBQVFIgbnMxLm51dGFuaXgubGFiLgogICAgICAxMiAgUFRSIG5zMi5udXRhbml4LmxhYi4KCiAgICAgIDQxICBQVFIgbnRueC1pcG1pMS5udXRhbml4LmxhYi4KICAgICAgNDIgIFBUUiBudG54LWlwbWkyLm51dGFuaXgubGFiLgogICAgICA0MyAgUFRSIG50bngtaXBtaTMubnV0YW5peC5sYWIuCiAgICAgIDQ0ICBQVFIgbnRueC1pcG1pNC5udXRhbml4LmxhYi4KCiAgICAgIDUxICBQVFIgbnRueC1haHYxLm51dGFuaXgubGFiLgogICAgICA1MiAgUFRSIG50bngtYWh2Mi5udXRhbml4LmxhYi4KICAgICAgNTMgIFBUUiBudG54LWFodjMubnV0YW5peC5sYWIuCiAgICAgIDU0ICBQVFIgbnRueC1haHY0Lm51dGFuaXgubGFiLgoKICAgICAgMjAxIFBUUiBzdy0xMGctcWZ4Lm51dGFuaXgubGFiLgogICAgICAyMDIgUFRSIHN3LTEwZy1leC5udXRhbml4LmxhYi4KICAgIGRlZmVyOiB0cnVlCgpwYWNrYWdlX3VwZGF0ZTogdHJ1ZQpwYWNrYWdlX3VwZ3JhZGU6IHRydWUKcGFja2FnZXM6CiAgLSB1ZncKICAtIGJpbmQ5CnJ1bmNtZDoKICAtIGhvc3RuYW1lY3RsIHNldC1ob3N0bmFtZSBuczEubnV0YW5peC5sYWIKICAtIHVmdyBhbGxvdyAyMi90Y3AKICAtIHVmdyBhbGxvdyA1MwogIC0gdWZ3IC0tZm9yY2UgZW5hYmxlCiAgLSBzeXN0ZW1jdGwgZW5hYmxlIGJpbmQ5CiAgLSBzeXN0ZW1jdGwgc3RhcnQgYmluZDkKcG93ZXJfc3RhdGU6CiAgICBkZWxheTogMQogICAgdGltZW91dDogNjAKICAgIG1vZGU6IHJlYm9vdAogICAgbWVzc2FnZTogIlJlYm9vdGluZyBtYWNoaW5lIgogICAgY29uZGl0aW9uOiB0cnVlCg=="
+                },
+                "is_overridable": false
+            }           
+        },
+        "cluster_reference": {
+            "kind": "cluster",
+            "name": "ntnx-cluster1",
+            "uuid": "0005fecf-a58e-36e6-21ca-b83fd2b50d1a"
+        }
+    },
+    "api_version": "3.1.0",
+    "metadata": {
+        "kind": "vm"
+    }
+}

@@ -1,0 +1,177 @@
+#cloud-config
+
+fqdn: ns1.nutanix.lab
+manage_etc_hosts: true
+timezone: Asia/Almaty
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$rounds=4096$Wz.LHvXCBpAkol4E$yLCuqVZlZfHVpdYC7ZaM2PcdInvBgXzwPQ8iWHTXe1e9t9cnSJVO4D2AB5mMTXa1tkMH/P1yUUoO1p7P8uEAO/
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/bind/named.conf.options
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      options {
+        directory           "/var/cache/bind";
+        listen-on           { any; };
+        listen-on-v6        { none; };
+        dnssec-validation   auto;
+
+        allow-query-cache   { any; };
+        recursion           yes;
+        allow-query         { any; };
+        allow-recursion     { any; };
+        allow-update        { none; };
+        allow-transfer      { any; };
+        notify              explicit;
+
+        masterfile-format   text;
+      };
+
+      logging {
+        channel bind.log {
+          file            "/var/cache/bind/bind.log" versions 10 size 20m;
+          severity        notice;
+          print-category  yes;
+          print-severity  yes;
+          print-time      yes;
+        };
+        category queries  { bind.log; };
+        category default  { bind.log; };
+        category config   { bind.log; };
+      };
+    defer: true
+
+  - path: /etc/bind/named.conf.local
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      zone "nutanix.lab" IN {
+        type  master;
+        file  "nutanix.lab.conf";
+      };
+
+      zone "8.1.10.in-addr.arpa" IN {
+        type  master;
+        file  "10.1.8.0.conf";
+      };
+    defer: true
+
+  - path: /var/cache/bind/SOA.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $TTL 86400    ; 24h
+
+      @ IN SOA      ns1.nutanix.lab. admin.nutanix.lab. (
+        2023062412  ; serial
+        3600        ;  1h refresh
+        600         ; 10m retry
+        432000      ;  5d expire
+        86400       ; 24h default TTL
+      )
+
+      @ NS  ns1.nutanix.lab.
+      @ NS  ns2.nutanix.lab.
+    defer: true
+
+  - path: /var/cache/bind/nutanix.lab.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      ns1             A   10.1.8.11
+      ns2             A   10.1.8.12
+
+      time            A   10.1.8.201
+      sw-10g-qfx      A   10.1.8.201
+      sw-1g-ex        A   10.1.8.202
+
+      ntnx-ipmi1      A   10.1.8.41
+      ntnx-ipmi2      A   10.1.8.42
+      ntnx-ipmi3      A   10.1.8.43
+      ntnx-ipmi4      A   10.1.8.44
+
+      ntnx-ahv1       A   10.1.8.51
+      ntnx-ahv2       A   10.1.8.52
+      ntnx-ahv3       A   10.1.8.53
+      ntnx-ahv4       A   10.1.8.54
+
+      ntnx-cvm1       A   10.1.8.61
+      ntnx-cvm2       A   10.1.8.62
+      ntnx-cvm3       A   10.1.8.63
+      ntnx-cvm4       A   10.1.8.64
+
+      ntnx-cluster1   A   10.1.8.60
+                      A   10.1.8.61
+                      A   10.1.8.62
+                      A   10.1.8.63
+                      A   10.1.8.64
+
+      ntnx-oc1        A   10.1.8.71
+      ntnx-pc2        A   10.1.8.72
+      ntnx-pc3        A   10.1.8.73
+
+      ntnx-pc         A   10.1.8.70
+                      A   10.1.8.71
+                      A   10.1.8.72
+                      A   10.1.8.73
+    defer: true
+
+  - path: /var/cache/bind/10.1.8.0.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      11  PTR ns1.nutanix.lab.
+      12  PTR ns2.nutanix.lab.
+
+      41  PTR ntnx-ipmi1.nutanix.lab.
+      42  PTR ntnx-ipmi2.nutanix.lab.
+      43  PTR ntnx-ipmi3.nutanix.lab.
+      44  PTR ntnx-ipmi4.nutanix.lab.
+
+      51  PTR ntnx-ahv1.nutanix.lab.
+      52  PTR ntnx-ahv2.nutanix.lab.
+      53  PTR ntnx-ahv3.nutanix.lab.
+      54  PTR ntnx-ahv4.nutanix.lab.
+
+      201 PTR sw-10g-qfx.nutanix.lab.
+      202 PTR sw-10g-ex.nutanix.lab.
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - bind9
+runcmd:
+  - hostnamectl set-hostname ns1.nutanix.lab
+  - ufw allow 22/tcp
+  - ufw allow 53
+  - ufw --force enable
+  - systemctl enable bind9
+  - systemctl start bind9
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true
