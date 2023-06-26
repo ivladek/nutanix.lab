@@ -6,6 +6,7 @@
 
 DEPLOY CLUSTER
  - Use foundation VM Web UI
+ - change passwords - root@ahv, nutanix@cvm
 
 DEPLOY DNS 1 using PE
  - Upload Ubuntu cloud image to the cluster
@@ -28,10 +29,11 @@ DEPLOY PC
  - Login to PC and set fqdn
  - connect PE to PC
  - LCM on PC and PE
+ - change passwords - nutanix@pcvm
 
 
 DEPLOY DNS 2 using PC
  - Upload Ubuntu cloud image to the cluster
  - get vdisk uuid for uploaded image
  - adopt YAMLs and JSONs to environment
- - deploy ns1 using Rest API
+ - deploy ns2 using Rest API
