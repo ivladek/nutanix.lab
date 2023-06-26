@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# export GITuser & GITkey
+# import GITemail & GITkey
 source secrets.sh
 
-GITemail="vladek@me.com"
+GITuser="ivladek"
 GITserver="github.com"
 GITrepo="nutanix.lab"
 GITbranch="marvel.2023"
