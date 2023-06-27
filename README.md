@@ -30,6 +30,7 @@ DEPLOY PC
  - connect PE to PC
  - LCM on PC and PE
  - change passwords - nutanix@pcvm
+ - import images to PC
 
 
 DEPLOY DNS 2 using PC
