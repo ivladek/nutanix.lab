@@ -102,6 +102,9 @@ write_files:
       sw-10g-qfx      A   10.1.8.201
       sw-1g-ex        A   10.1.8.202
 
+      foundation      A   10.1.8.110
+      admin           A   10.1.8.111
+
       ntnx-ipmi1      A   10.1.8.41
       ntnx-ipmi2      A   10.1.8.42
       ntnx-ipmi3      A   10.1.8.43
@@ -149,6 +152,8 @@ write_files:
                       A   10.1.8.92
                       A   10.1.8.93
                       A   10.1.8.94
+
+      k8s-1           A   10.1.8.100
     defer: true
 
   - path: /var/cache/bind/10.1.8.0.conf
@@ -174,6 +179,9 @@ write_files:
       81  PTR NTNX-fs1-1.nutanix.lab.
       82  PTR NTNX-fs1-2.nutanix.lab.
       83  PTR NTNX-fs1-3.nutanix.lab.
+
+      100 PTR k8s-1.nutanix.lab.
+      111 PTR admin.nutanix.lab.
 
       201 PTR sw-10g-qfx.nutanix.lab.
       202 PTR sw-10g-ex.nutanix.lab.
