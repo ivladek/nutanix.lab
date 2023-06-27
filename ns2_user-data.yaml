@@ -60,13 +60,13 @@ write_files:
     content: |
       zone "nutanix.lab" IN {
         type    slave;
-        masters { 10.1.8.11; }
+        masters { 10.1.8.11; };
         file    "nutanix.lab.conf";
       };
 
       zone "8.1.10.in-addr.arpa" IN {
         type    slave;
-        masters { 10.1.8.11; }
+        masters { 10.1.8.11; };
         file    "10.1.8.0.conf";
       };
     defer: true
