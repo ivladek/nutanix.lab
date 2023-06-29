@@ -30,7 +30,7 @@
                     },
                     "data_source_reference": {
                         "kind": "image",
-                        "uuid": "b3de9de1-36cc-4acc-83ca-6f4db5b64f33"
+                        "uuid": "379f5639-c4c0-4d77-9bec-c3e13d13442f"
                     },
                     "disk_size_mib": 5120
                 }
@@ -62,7 +62,7 @@
         "cluster_reference": {
             "kind": "cluster",
             "name": "ntnx-cluster1",
-            "uuid": "0005fecf-a58e-36e6-21ca-b83fd2b50d1a"
+            "uuid": "0005ff33-590c-0219-2f86-b83fd2b50d1a"
         }
     },
     "api_version": "3.1.0",
