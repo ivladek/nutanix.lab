@@ -62,7 +62,7 @@
         "cluster_reference": {
             "kind": "cluster",
             "name": "ntnx-cluster1",
-            "uuid": "0005fecf-a58e-36e6-21ca-b83fd2b50d1a"
+            "uuid": "0005ff33-590c-0219-2f86-b83fd2b50d1a"
         }
     },
     "api_version": "3.1.0",
