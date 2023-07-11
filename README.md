@@ -1,3 +1,9 @@
+PLAN
+ - VLANs + IP Subnets
+ - Internet connection
+ - admin station - VM or notebook
+ - resources Foundation VM
+
  PREPARATION
  - switches - ports, NTP
  - IPMI - IP Address, uEFI, NTP (!!!), power off
@@ -6,8 +12,10 @@
 
 DEPLOY CLUSTER
  - Use foundation VM Web UI
- - change passwords - root@ahv, nutanix@cvm
-
+ - change passwords - login to any CVM:
+   - nutanix on cluster:  echo "nutanix:Nutanix@2023" | sudo chpasswd
+   - root on AHV:  allssh "ssh root@192.168.5.1 'echo \"root:Nutanix@2023\" | chpasswd'"
+   - nutanix on AHV:  allssh "ssh root@192.168.5.1 'echo \"nutanix:Nutanix@2023\" | chpasswd'"
 DEPLOY DNS 1 using PE
  - Upload Ubuntu cloud image to the cluster
  - get vdisk uuid for uploaded image
