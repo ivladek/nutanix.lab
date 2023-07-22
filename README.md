@@ -16,17 +16,30 @@ DEPLOY CLUSTER
    - nutanix on cluster:  echo "nutanix:Nutanix@2023" | sudo chpasswd
    - root on AHV:  allssh "ssh root@192.168.5.1 'echo \"root:Nutanix@2023\" | chpasswd'"
    - nutanix on AHV:  allssh "ssh root@192.168.5.1 'echo \"nutanix:Nutanix@2023\" | chpasswd'"
-DEPLOY DNS 1 using PE
- - Upload Ubuntu cloud image to the cluster
- - get vdisk uuid for uploaded image
- - adopt YAMLs and JSONs to environment
- - deploy ns1 using Rest API
 
 POST DEPLOY CLUSTER
  - iSCSI data IP - set
  - LCM - update everything
  - Virtual switch - MTU, uplinks
  - Networks segments - create with and without IPAM
+
+DEPLOY DNS 1 using PE
+ - Upload Ubuntu cloud image to the cluster
+ - adopt YAMLs and JSONs to environment
+    - get vdisk uuid for uploaded image
+      - image uuid for API v3: acli image.list
+      - vdisk uuid for API v2: acli image.get <image uuid>
+    - get net uuid: acli net.list
+    - get cluster uuid: ncli cluster info
+    - convert user-data to:
+      - one line    for API v2: ./yaml-to-row.sh ns1_user-data.yaml
+        - copy line from ns1_user-data.yaml.txt to ns1_vm-data_api-v2.json
+      - base64 line for API v3: ./yaml-to-b64.sh ns2_user-data.yaml
+        - copy line from ns2_user-data.yaml.txt to ns1_vm-data_api-v3.json
+ - copy scripts to CVM1 to ~/tmp
+ - deploy ns1 using Rest API: ./ns2_vm-create
+
+POST DEPLOY CLUSTER
  - set cluster fqdn
 
 DEPLOY PC
