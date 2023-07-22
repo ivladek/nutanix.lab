@@ -6,7 +6,7 @@ timezone: Asia/Almaty
 
 users:
   - name: nutanix
-    hashed_passwd: $6$rounds=4096$Wz.LHvXCBpAkol4E$yLCuqVZlZfHVpdYC7ZaM2PcdInvBgXzwPQ8iWHTXe1e9t9cnSJVO4D2AB5mMTXa1tkMH/P1yUUoO1p7P8uEAO/
+    hashed_passwd: $6$rounds=4096$PcS8PVotAkBo0Kwj$o6bingcJqa.wdp5YQc.8k0ngeTmQX/VKJrCBCfqI7ULG18Y29JcZUM8vPrga/omeUsyuQ.eEU3wBOAhyMIE351
     groups: sudo
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
