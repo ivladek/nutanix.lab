@@ -14,8 +14,8 @@ DEPLOY CLUSTER
  - Use foundation VM Web UI
  - change passwords - login to any CVM:
    - nutanix on cluster:  echo "nutanix:Nutanix@2023" | sudo chpasswd
-   - root on AHV:  allssh "ssh root@192.168.5.1 'echo \"root:Nutanix@2023\" | chpasswd'"
-   - nutanix on AHV:  allssh "ssh root@192.168.5.1 'echo \"nutanix:Nutanix@2023\" | chpasswd'"
+   - root on AHV:         allssh "ssh root@192.168.5.1 'echo \"root:Nutanix@2023\" | chpasswd'"
+   - nutanix on AHV:      allssh "ssh root@192.168.5.1 'echo \"nutanix:Nutanix@2023\" | chpasswd'"
 
 POST DEPLOY CLUSTER
  - iSCSI data IP - set
@@ -37,7 +37,7 @@ DEPLOY DNS 1 using PE
       - base64 line for API v3: ./yaml-to-b64.sh ns2_user-data.yaml
         - copy line from ns2_user-data.yaml.txt to ns1_vm-data_api-v3.json
  - copy scripts to CVM1 to ~/tmp
- - deploy ns1 using Rest API: ./ns2_vm-create
+ - deploy ns1 using Rest API: ./ns2_vm-create.sh
 
 POST DEPLOY CLUSTER
  - set cluster fqdn
@@ -45,12 +45,12 @@ POST DEPLOY CLUSTER
 DEPLOY PC
  - download 1-click deploy PC from PE image
  - upload tar & json to cvm1 to /home/nutanix/tmp
- - add to PC -  ncli software upload file-path=/home/nutanix/tmp/pc.2023.1.0.1.tar meta-file-path=/home/nutanix/tmp/generated-pc.2023.1.0.1-metadata.json  software-type=PRISM_CENTRAL_DEPLOY
+ - add to PC -  ncli software upload file-path=/home/nutanix/tmp/zakroma/pc.2023.1.0.2.tar meta-file-path=/home/nutanix/tmp/zakroma/generated-pc.2023.1.0.2-metadata.json  software-type=PRISM_CENTRAL_DEPLOY
  - Deploy PC
  - Login to PC and set fqdn
  - connect PE to PC
  - LCM on PC and PE
- - change passwords - nutanix@pcvm
+ - change passwords - login to any PCVM: echo "nutanix:Nutanix@2023" | sudo chpasswd
  - import images to PC
 
 

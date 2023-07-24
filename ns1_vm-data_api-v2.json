@@ -24,7 +24,7 @@
             },
             "vm_disk_clone": {
                 "disk_address": {
-                    "vmdisk_uuid": "fde9d407-ba51-443d-98dd-57ffc17c0ba4"
+                    "vmdisk_uuid": "dd4b145c-9d94-4541-b26d-1ab5a4bee464"
                 },
                 "minimum_size": 5368709120
             }
@@ -32,7 +32,7 @@
     ],
     "vm_nics": [
         {
-            "network_uuid": "8af06e99-c487-49d0-887c-c872b7c957b8",
+            "network_uuid": "5c3f2e79-1e75-4a46-bf32-ab427cb27ef6",
             "is_connected": true,
             "request_ip": true,
             "requested_ip_address": "10.1.8.11"
