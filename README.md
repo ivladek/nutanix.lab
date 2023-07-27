@@ -59,3 +59,7 @@ DEPLOY DNS 2 using PC
  - get vdisk uuid for uploaded image
  - adopt YAMLs and JSONs to environment
  - deploy ns2 using Rest API
+
+DEPLOY LDAP (DC)
+ - %WINDIR%\system32\sysprep\sysprep.exe /generalize /oobe /mode:vm /shutdown
+ 
