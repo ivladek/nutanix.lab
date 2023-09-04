@@ -63,3 +63,12 @@ DEPLOY DNS 2 using PC
 DEPLOY LDAP (DC)
  - %WINDIR%\system32\sysprep\sysprep.exe /generalize /oobe /mode:vm /shutdown
  
+
+PREPARE WINDOWS IMAGE
+ - VM: 1 vCore, 4 GB RAM, 40 GB HDD, 2 CD-ROM (Windows ISO, VirtIO ISO), 1 Serial, 1 NIC
+ - Install Windows Server 2019 using Nutanix VirtIO
+ - Install Nutanix Guest Tools
+ - Disable IESC, UAC
+ - Enable RDP
+ - Install Python
+ 
