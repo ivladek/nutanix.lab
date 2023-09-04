@@ -30,7 +30,7 @@
                     },
                     "data_source_reference": {
                         "kind": "image",
-                        "uuid": "7dc181ac-2ede-454f-b901-36dc703548d2"
+                        "uuid": "5b3ce4c0-665c-4518-8e42-81c5a09702bb"
                     },
                     "disk_size_mib": 5120
                 }
@@ -48,7 +48,7 @@
                     "subnet_reference": {
                         "kind": "subnet",
                         "name": "ntnx-core_ip",
-                        "uuid": "5c3f2e79-1e75-4a46-bf32-ab427cb27ef6"
+                        "uuid": "8ba935aa-3cad-4d50-9c7b-2dad356b7146"
                     }
                 }
             ],
@@ -62,7 +62,7 @@
         "cluster_reference": {
             "kind": "cluster",
             "name": "ntnx-cluster1",
-            "uuid": "00060127-0749-4e85-67f9-b83fd2b50d1a"
+            "uuid": "00060483-f6d0-a4af-2ab7-b83fd2b50d1a"
         }
     },
     "api_version": "3.1.0",
