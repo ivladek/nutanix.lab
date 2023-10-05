@@ -104,6 +104,7 @@ write_files:
 
       foundation      A   10.1.8.110
       admin           A   10.1.8.111
+      xray            A   10.1.8.112
 
       ntnx-ipmi1      A   10.1.8.41
       ntnx-ipmi2      A   10.1.8.42
@@ -126,7 +127,7 @@ write_files:
                       A   10.1.8.63
                       A   10.1.8.64
 
-      ntnx-oc1        A   10.1.8.71
+      ntnx-pc1        A   10.1.8.71
       ntnx-pc2        A   10.1.8.72
       ntnx-pc3        A   10.1.8.73
 
@@ -153,7 +154,7 @@ write_files:
                       A   10.1.8.93
                       A   10.1.8.94
 
-      k8s-1           A   10.1.8.100
+      k8s             A   10.1.8.100
 
 
       @                                                               A               10.1.8.10
@@ -188,6 +189,7 @@ write_files:
       _kerberos._udp                                                  SRV 0 100 88    dc1.nutanix.lab.
       _kpasswd._tcp                                                   SRV 0 100 464   dc1.nutanix.lab.
       _kpasswd._udp                                                   SRV 0 100 464   dc1.nutanix.lab.
+
       _vlmcs._tcp                                                     SRV 0 0 1688    dc1.nutanix.lab.
     defer: true
 
@@ -216,8 +218,9 @@ write_files:
       82  PTR NTNX-fs1-2.nutanix.lab.
       83  PTR NTNX-fs1-3.nutanix.lab.
 
-      100 PTR k8s-1.nutanix.lab.
+      100 PTR k8s.nutanix.lab.
       111 PTR admin.nutanix.lab.
+      112 PTR xray.nutanix.lab.
 
       201 PTR sw-10g-qfx.nutanix.lab.
       202 PTR sw-10g-ex.nutanix.lab.
