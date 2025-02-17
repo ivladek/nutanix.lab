@@ -1,0 +1,33 @@
+#cloud-config
+
+timezone: Asia/Tashkent
+
+users:
+  - name: @@{LINUX_LOGIN.username}@@
+    hashed_passwd: $6$0JtBscsFp/OovKkC$DAUSl3G1Htc22QXe.kPRzmE2b8t9iSChNDFODjoPofg0d1YEx/WmNd8/O/lb1k/4GAuhF4S8NXCAsV57WOYPj.
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+runcmd:
+  - sudo sh -c 'echo "@@{LINUX_LOGIN.username}@@:@@{LINUX_LOGIN.secret}@@" | chpasswd'
+
+
+
+#cloud-config
+users:
+  - name: nutanix
+    hashed_passwd: $6$ZVEebzpiHdHH0Xdq$9Y5d8Hn09psTJprLje4OUOWhIY6ak.ix4uCZusmTiW8X9TEyme9RzZuF4nIwcHRUHwkHoFaZSaBfx33C3AQ0Q.
+    ssh_authorized_keys:
+      - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJxkV6pitsM2PLG5ODcehZ93GwYpeop63Hg4aBddExPx sample key for cloud admin'
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false

@@ -1,0 +1,36 @@
+#cloud-config
+
+fqdn: repo.nutanix.lab
+manage_etc_hosts: true
+timezone: Asia/Almaty
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$rounds=4096$PcS8PVotAkBo0Kwj$o6bingcJqa.wdp5YQc.8k0ngeTmQX/VKJrCBCfqI7ULG18Y29JcZUM8vPrga/omeUsyuQ.eEU3wBOAhyMIE351
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - apache2
+runcmd:
+  - hostnamectl set-hostname repo.nutanix.lab
+  - ufw allow 22/tcp
+  - ufw allow 80
+  - ufw --force enable
+  - systemctl enable apache2
+  - systemctl start apache2
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true

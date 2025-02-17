@@ -1,0 +1,112 @@
+#cloud-config
+
+fqdn: ns2.hyper.app
+manage_etc_hosts: true
+timezone: Asia/Tashkent
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$aOZ1fC.ZVDB5eN8i$03E5Uy.qb4cKZHoQVocq0MWepw11ygQTVcUjOiZQ9kM3mFVNEykjhe.zbejFZo30rRhrDZRC3tj.B6woKa1m8.
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/bind/named.conf.options
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      options {
+        directory           "/var/cache/bind";
+        listen-on           { any; };
+        listen-on-v6        { none; };
+        dnssec-validation   auto;
+
+        allow-query-cache   { any; };
+        recursion           yes;
+        allow-query         { any; };
+        allow-recursion     { any; };
+        allow-update        { none; };
+        allow-transfer      { any; };
+        notify              explicit;
+
+        masterfile-format   text;
+      };
+
+      logging {
+        channel bind.log {
+          file            "/var/cache/bind/bind.log" versions 10 size 20m;
+          severity        notice;
+          print-category  yes;
+          print-severity  yes;
+          print-time      yes;
+        };
+        category queries  { bind.log; };
+        category default  { bind.log; };
+        category config   { bind.log; };
+      };
+    defer: true
+
+  - path: /etc/bind/named.conf.local
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      zone "hyper.app" IN {
+        type    slave;
+        masters { 100.64.11.11; };
+        file    "hyper.app.conf";
+      };
+
+      zone "11.64.100.in-addr.arpa" IN {
+        type    slave;
+        masters { 100.64.11.11; };
+        file    "100.64.11.0.conf";
+      };
+    defer: true
+
+  - path: /etc/netplan/50-cloud-init.yaml
+    owner: root:root
+    permissions: "0600"
+    encoding: text/plain
+    content: |
+      network:
+          version: 2
+          ethernets:
+              ens3:
+                  mtu: 1500
+                  dhcp4: false
+                  dhcp6: false
+                  addresses: [ 100.64.11.12/24 ]
+                  routes:
+                      - to: 0.0.0.0/0
+                        via: 100.64.11.1
+                  nameservers:
+                      addresses: [ 127.0.0.1 ]
+                      search: [ hyper.app ]
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - bind9
+runcmd:
+  - hostnamectl set-hostname ns2.hyper.app
+  - ufw allow 22/tcp
+  - ufw allow 53
+  - ufw --force enable
+  - systemctl enable bind9
+  - systemctl start bind9
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true

@@ -1,0 +1,240 @@
+#cloud-config
+
+fqdn: ns1.nutanix.lab
+manage_etc_hosts: true
+timezone: Asia/Tashkent
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$X1tp.zgmlYvpKk/9$GluY0ufgAtlAg.VEp00vD5q0zjM/3BqfkBRLEXbaTrE849lL9Ym8use67yMwpugqPloZ1KU8T..WTLm4L7oO./
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/bind/named.conf.options
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      options {
+        directory           "/var/cache/bind";
+        listen-on           { any; };
+        listen-on-v6        { none; };
+        dnssec-validation   auto;
+
+        allow-query-cache   { any; };
+        recursion           yes;
+        allow-query         { any; };
+        allow-recursion     { any; };
+        allow-update        { none; };
+        allow-transfer      { any; };
+        notify              explicit;
+
+        masterfile-format   text;
+      };
+
+      logging {
+        channel bind.log {
+          file            "/var/cache/bind/bind.log" versions 10 size 20m;
+          severity        notice;
+          print-category  yes;
+          print-severity  yes;
+          print-time      yes;
+        };
+        category queries  { bind.log; };
+        category default  { bind.log; };
+        category config   { bind.log; };
+      };
+    defer: true
+
+  - path: /etc/bind/named.conf.local
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      zone "nutanix.lab" IN {
+        type  master;
+        file  "nutanix.lab.conf";
+      };
+
+      zone "1.250.10.in-addr.arpa" IN {
+        type  master;
+        file  "10.250.1.0.conf";
+      };
+    defer: true
+
+  - path: /var/cache/bind/SOA.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $TTL 86400    ; 24h
+
+      @ IN SOA      ns1.nutanix.lab. admin.nutanix.lab. (
+        2023072421  ; serial
+        3600        ;  1h refresh
+        600         ; 10m retry
+        432000      ;  5d expire
+        86400       ; 24h default TTL
+      )
+
+      @ NS  ns1.nutanix.lab.
+      @ NS  ns2.nutanix.lab.
+    defer: true
+
+  - path: /var/cache/bind/nutanix.lab.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      ns1             A   10.250.1.11
+      ns2             A   10.250.1.12
+
+      time            A   10.250.1.250
+
+      admin           A   10.250.1.13
+      foundation      A   10.250.1.14
+      move            A   10.250.1.15
+      xray            A   10.250.1.16
+
+      ntnx-ipmi1      A   10.250.1.21
+      ntnx-ipmi2      A   10.250.1.22
+      ntnx-ipmi3      A   10.250.1.23
+      ntnx-ipmi4      A   10.250.1.24
+
+      ntnx-ahv1       A   10.250.1.31
+      ntnx-ahv2       A   10.250.1.32
+      ntnx-ahv3       A   10.250.1.33
+      ntnx-ahv4       A   10.250.1.34
+
+      ntnx-cvm1       A   10.250.1.41
+      ntnx-cvm2       A   10.250.1.42
+      ntnx-cvm3       A   10.250.1.43
+      ntnx-cvm4       A   10.250.1.44
+
+      lab-cluster     A   10.250.1.40
+                      A   10.250.1.41
+                      A   10.250.1.42
+                      A   10.250.1.43
+                      A   10.250.1.44
+
+      ntnx-pc1        A   10.250.1.51
+      ntnx-pc2        A   10.250.1.52
+      ntnx-pc3        A   10.250.1.53
+
+      lab-pc          A   10.250.1.50
+                      A   10.250.1.51
+                      A   10.250.1.52
+                      A   10.250.1.53
+
+      NTNX-fs1-1      A   10.250.1.61
+      NTNX-fs1-3      A   10.250.1.62
+      NTNX-fs1-3      A   10.250.1.63
+
+      fs1             A   10.250.1.71
+                      A   10.250.1.72
+                      A   10.250.1.73
+
+      s3              A   10.250.1.81
+                      A   10.250.1.82
+                      A   10.250.1.83
+                      A   10.250.1.84
+
+      *.s3            A   10.250.1.81
+                      A   10.250.1.82
+                      A   10.250.1.83
+                      A   10.250.1.84
+
+
+      @                                                               A               10.250.1.10
+      dc1                                                             A               10.250.1.10
+
+      ForestDnsZones                                                  A               10.250.1.10
+      _ldap._tcp.SITE1._sites.ForestDnsZones                          SRV 0 100 389   dc1.nutanix.lab.
+      _ldap._tcp.ForestDnsZones                                       SRV 0 100 389   dc1.nutanix.lab.
+
+      DomainDnsZones                                                  A               10.250.1.10
+      _ldap._tcp.SITE1._sites.DomainDnsZones                          SRV 0 100 389   dc1.nutanix.lab.
+      _ldap._tcp.DomainDnsZones                                       SRV 0 100 389   dc1.nutanix.lab.
+
+      _gc._tcp.SITE1._sites                                           SRV 0 100 3268  dc1.nutanix.lab.
+      _kerberos._tcp.SITE1._sites                                     SRV 0 100 88    dc1.nutanix.lab.
+      _ldap._tcp.SITE1._sites                                         SRV 0 100 389   dc1.nutanix.lab.
+
+      60503e14-9822-4e54-9fed-aea8e7ab6831._msdcs                     CNAME           dc1.nutanix.lab.
+      _kerberos._tcp.SITE1._sites.dc._msdcs                           SRV 0 100 88    dc1.nutanix.lab.
+      _ldap._tcp.SITE1._sites.dc._msdcs                               SRV 0 100 389   dc1.nutanix.lab.
+      _kerberos._tcp.dc._msdcs                                        SRV 0 100 88    dc1.nutanix.lab.
+      _ldap._tcp.dc._msdcs                                            SRV 0 100 389   dc1.nutanix.lab.
+      _ldap._tcp.a9b9b1b7-bf8d-4053-9407-c41024b3c885.domains._msdcs  SRV 0 100 389   dc1.nutanix.lab.
+      gc._msdcs                                                       A               10.250.1.10
+      _ldap._tcp.SITE1._sites.gc._msdcs                               SRV 0 100 3268  dc1.nutanix.lab.
+      _ldap._tcp.gc._msdcs                                            SRV 0 100 3268  dc1.nutanix.lab.
+      _ldap._tcp.pdc._msdcs                                           SRV 0 100 389   dc1.nutanix.lab.
+
+      _gc._tcp                                                        SRV 0 100 3268  dc1.nutanix.lab.
+      _ldap._tcp                                                      SRV 0 100 389   dc1.nutanix.lab.
+      _kerberos._tcp                                                  SRV 0 100 88    dc1.nutanix.lab.
+      _kerberos._udp                                                  SRV 0 100 88    dc1.nutanix.lab.
+      _kpasswd._tcp                                                   SRV 0 100 464   dc1.nutanix.lab.
+      _kpasswd._udp                                                   SRV 0 100 464   dc1.nutanix.lab.
+
+      _vlmcs._tcp                                                     SRV 0 0 1688    dc1.nutanix.lab.
+    defer: true
+
+  - path: /var/cache/bind/10.250.1.0.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      10  PTR dc1.nutanix.lab.
+      11  PTR ns1.nutanix.lab.
+      12  PTR ns2.nutanix.lab.
+      13  PTR admin.nutanix.lab.
+      14  PTR foundation.nutanix.lab.
+      15  PTR move.nutanix.lab.
+      16  PTR xray.nutanix.lab.
+
+      21  PTR ntnx-ipmi1.nutanix.lab.
+      22  PTR ntnx-ipmi2.nutanix.lab.
+      23  PTR ntnx-ipmi3.nutanix.lab.
+      24  PTR ntnx-ipmi4.nutanix.lab.
+
+      31  PTR ntnx-ahv1.nutanix.lab.
+      32  PTR ntnx-ahv2.nutanix.lab.
+      33  PTR ntnx-ahv3.nutanix.lab.
+      34  PTR ntnx-ahv4.nutanix.lab.
+
+      41  PTR NTNX-fs1-1.nutanix.lab.
+      42  PTR NTNX-fs1-2.nutanix.lab.
+      43  PTR NTNX-fs1-3.nutanix.lab.
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - bind9
+runcmd:
+  - hostnamectl set-hostname ns1.nutanix.lab
+  - ufw allow 22/tcp
+  - ufw allow 53
+  - ufw --force enable
+  - systemctl enable bind9
+  - systemctl start bind9
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true

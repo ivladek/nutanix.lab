@@ -1,0 +1,90 @@
+#cloud-config
+
+fqdn: ns2.nutanix.lab
+manage_etc_hosts: true
+timezone: Asia/Tashkent
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$X1tp.zgmlYvpKk/9$GluY0ufgAtlAg.VEp00vD5q0zjM/3BqfkBRLEXbaTrE849lL9Ym8use67yMwpugqPloZ1KU8T..WTLm4L7oO./
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/bind/named.conf.options
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      options {
+        directory           "/var/cache/bind";
+        listen-on           { any; };
+        listen-on-v6        { none; };
+        dnssec-validation   auto;
+
+        allow-query-cache   { any; };
+        recursion           yes;
+        allow-query         { any; };
+        allow-recursion     { any; };
+        allow-update        { none; };
+        allow-transfer      { any; };
+        notify              explicit;
+
+        masterfile-format   text;
+      };
+
+      logging {
+        channel bind.log {
+          file            "/var/cache/bind/bind.log" versions 10 size 20m;
+          severity        notice;
+          print-category  yes;
+          print-severity  yes;
+          print-time      yes;
+        };
+        category queries  { bind.log; };
+        category default  { bind.log; };
+        category config   { bind.log; };
+      };
+    defer: true
+
+  - path: /etc/bind/named.conf.local
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      zone "nutanix.lab" IN {
+        type    slave;
+        masters { 10.250.1.11; };
+        file    "nutanix.lab.conf";
+      };
+
+      zone "1.250.10.in-addr.arpa" IN {
+        type    slave;
+        masters { 10.250.1.11; };
+        file    "10.250.1.0.conf";
+      };
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - bind9
+runcmd:
+  - hostnamectl set-hostname ns2.nutanix.lab
+  - ufw allow 22/tcp
+  - ufw allow 53
+  - ufw --force enable
+  - systemctl enable bind9
+  - systemctl start bind9
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true

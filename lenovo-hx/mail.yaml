@@ -1,0 +1,60 @@
+#cloud-config
+
+fqdn: sm32mail.core.cloudinside.net
+manage_etc_hosts: true
+timezone: Europe/Moscow
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$aOZ1fC.ZVDB5eN8i$03E5Uy.qb4cKZHoQVocq0MWepw11ygQTVcUjOiZQ9kM3mFVNEykjhe.zbejFZo30rRhrDZRC3tj.B6woKa1m8.
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/netplan/50-cloud-init.yaml
+    owner: root:root
+    permissions: "0600"
+    encoding: text/plain
+    content: |
+      network:
+          version: 2
+          ethernets:
+              ens192:
+                  mtu: 1500
+                  dhcp4: false
+                  dhcp6: false
+                  addresses: [ 10.77.1.17/24 ]
+                  routes:
+                      - to: 0.0.0.0/0
+                        via: 10.77.1.1
+                  nameservers:
+                      addresses: [ 10.77.1.11, 10.77.1.12 ]
+                      search: [ core.cloudinside.net ]
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+
+runcmd:
+  - hostnamectl set-hostname sm32mail.core.cloudinside.net
+  - ufw allow 22/tcp
+  - ufw allow 25/tcp
+  - ufw allow 587/tcp
+  - ufw allow 993/tcp
+  - ufw --force enable
+
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true
+

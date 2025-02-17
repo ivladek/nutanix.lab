@@ -1,0 +1,222 @@
+#cloud-config
+
+fqdn: ns1.hyper.app
+manage_etc_hosts: true
+timezone: Asia/Tashkent
+
+users:
+  - name: nutanix
+    hashed_passwd: $6$aOZ1fC.ZVDB5eN8i$03E5Uy.qb4cKZHoQVocq0MWepw11ygQTVcUjOiZQ9kM3mFVNEykjhe.zbejFZo30rRhrDZRC3tj.B6woKa1m8.
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
+write_files:
+  - path: /etc/bind/named.conf.options
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      options {
+        directory           "/var/cache/bind";
+        listen-on           { any; };
+        listen-on-v6        { none; };
+        dnssec-validation   auto;
+
+        allow-query-cache   { any; };
+        recursion           yes;
+        allow-query         { any; };
+        allow-recursion     { any; };
+        allow-update        { none; };
+        allow-transfer      { any; };
+        notify              explicit;
+
+        masterfile-format   text;
+      };
+
+      logging {
+        channel bind.log {
+          file            "/var/cache/bind/bind.log" versions 10 size 20m;
+          severity        notice;
+          print-category  yes;
+          print-severity  yes;
+          print-time      yes;
+        };
+        category queries  { bind.log; };
+        category default  { bind.log; };
+        category config   { bind.log; };
+      };
+    defer: true
+
+  - path: /etc/bind/named.conf.local
+    owner: root:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      zone "hyper.app" IN {
+        type  master;
+        file  "hyper.app.conf";
+      };
+
+      zone "11.64.100.in-addr.arpa" IN {
+        type  master;
+        file  "100.64.11.0.conf";
+      };
+    defer: true
+
+  - path: /var/cache/bind/SOA.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $TTL 86400    ; 24h
+
+      @ IN SOA      ns1.hyper.app. admin.hyper.app. (
+        2023072421  ; serial
+        3600        ;  1h refresh
+        600         ; 10m retry
+        432000      ;  5d expire
+        86400       ; 24h default TTL
+      )
+
+      @ NS  ns1.hyper.app.
+      @ NS  ns2.hyper.app.
+    defer: true
+
+  - path: /var/cache/bind/hyper.app.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      ns1             A       100.64.11.11
+      ns2             A       100.64.11.12
+
+      ldap1           A       100.64.11.13
+
+      cdc1mgmt        A       100.64.11.200
+      cdc1data1       A       100.64.11.201
+      cdc1data2       A       100.64.11.202
+      gdc1border1     A       100.64.11.203
+      gdc1border2     A       100.64.11.204
+
+      time1           CNAME   cdc1data1.hyper.app
+      time2           CNAME   cdc1data2.hyper.app
+
+      mdc1ahv01       A       100.64.11.111
+      mdc1ahv02       A       100.64.11.112
+      mdc1ahv03       A       100.64.11.113
+
+      hdc1ahv01       A       100.64.11.121
+      hdc1ahv02       A       100.64.11.122
+      hdc1ahv03       A       100.64.11.123
+
+      cloud-dc1-r1    A       100.64.11.130
+                      A       100.64.11.131
+                      A       100.64.11.132
+                      A       100.64.11.133
+
+      cloud-dc1       A       100.64.11.100
+                      A       100.64.11.101
+                      A       100.64.11.102
+                      A       100.64.11.103
+
+      @                                                               A               100.64.11.13
+      ldap1                                                           A               100.64.11.13
+
+      ForestDnsZones                                                  A               100.64.11.13
+      _ldap._tcp.DC1._sites.ForestDnsZones                            SRV 0 100 389   ldap1.hyper.app.
+      _ldap._tcp.ForestDnsZones                                       SRV 0 100 389   ldap1.hyper.app.
+
+      DomainDnsZones                                                  A               100.64.11.13
+      _ldap._tcp.DC1._sites.DomainDnsZones                            SRV 0 100 389   ldap1.hyper.app.
+      _ldap._tcp.DomainDnsZones                                       SRV 0 100 389   ldap1.hyper.app.
+
+      _gc._tcp.DC1._sites                                             SRV 0 100 3268  ldap1.hyper.app.
+      _kerberos._tcp.DC1._sites                                       SRV 0 100 88    ldap1.hyper.app.
+      _ldap._tcp.DC1._sites                                           SRV 0 100 389   ldap1.hyper.app.
+
+      60503e14-9822-4e54-9fed-aea8e7ab6831._msdcs                     CNAME           ldap1.hyper.app.
+      _kerberos._tcp.DC1._sites.dc._msdcs                             SRV 0 100 88    ldap1.hyper.app.
+      _ldap._tcp.DC1._sites.dc._msdcs                                 SRV 0 100 389   ldap1.hyper.app.
+      _kerberos._tcp.dc._msdcs                                        SRV 0 100 88    ldap1.hyper.app.
+      _ldap._tcp.dc._msdcs                                            SRV 0 100 389   ldap1.hyper.app.
+      _ldap._tcp.a9b9b1b7-bf8d-4053-9407-c41024b3c885.domains._msdcs  SRV 0 100 389   ldap1.hyper.app.
+      gc._msdcs                                                       A               100.64.11.10
+      _ldap._tcp.DC1._sites.gc._msdcs                                 SRV 0 100 3268  ldap1.hyper.app.
+      _ldap._tcp.gc._msdcs                                            SRV 0 100 3268  ldap1.hyper.app.
+      _ldap._tcp.pdc._msdcs                                           SRV 0 100 389   ldap1.hyper.app.
+
+      _gc._tcp                                                        SRV 0 100 3268  ldap1.hyper.app.
+      _ldap._tcp                                                      SRV 0 100 389   ldap1.hyper.app.
+      _kerberos._tcp                                                  SRV 0 100 88    ldap1.hyper.app.
+      _kerberos._udp                                                  SRV 0 100 88    ldap1.hyper.app.
+      _kpasswd._tcp                                                   SRV 0 100 464   ldap1.hyper.app.
+      _kpasswd._udp                                                   SRV 0 100 464   ldap1.hyper.app.
+    defer: true
+
+  - path: /var/cache/bind/100.64.11.0.conf
+    owner: bind:bind
+    permissions: "0644"
+    encoding: text/plain
+    content: |
+      $INCLUDE SOA.conf
+
+      11  PTR ns1.hyper.app.
+      12  PTR ns2.hyper.app.
+      13  PTR ldap1.hyper.app.
+
+      111  PTR mdc1ahv01.hyper.app.
+      112  PTR mdc1ahv02.hyper.app.
+      113  PTR mdc1ahv03.hyper.app.
+
+      121  PTR ntnx-ahv1.hyper.app.
+      122  PTR ntnx-ahv2.hyper.app.
+      123  PTR ntnx-ahv3.hyper.app.
+    defer: true
+
+  - path: /etc/netplan/50-cloud-init.yaml
+    owner: root:root
+    permissions: "0600"
+    encoding: text/plain
+    content: |
+      network:
+          version: 2
+          ethernets:
+              ens3:
+                  mtu: 1500
+                  dhcp4: false
+                  dhcp6: false
+                  addresses: [ 100.64.11.11/24 ]
+                  routes:
+                      - to: 0.0.0.0/0
+                        via: 100.64.11.1
+                  nameservers:
+                      addresses: [ 127.0.0.1 ]
+                      search: [ hyper.app ]
+    defer: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - bind9
+runcmd:
+  - hostnamectl set-hostname ns1.hyper.app
+  - ufw allow 22/tcp
+  - ufw allow 53
+  - ufw --force enable
+  - systemctl enable bind9
+  - systemctl start bind9
+power_state:
+    delay: 1
+    timeout: 60
+    mode: reboot
+    message: "Rebooting machine"
+    condition: true
